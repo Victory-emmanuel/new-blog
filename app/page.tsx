@@ -7,7 +7,8 @@ import Pagination from "./components/paginationSect";
 import PaginationSect from "./components/paginationSect";
 
 const getpost = async (lastPageNum: number = 0) => {
-  const query = groq`*[_type == 'blog'] | order(_createdAt desc) [${lastPageNum}...${lastPageNum} + 2 ]
+  // Fix range calculation and use proper GROQ syntax
+  const query = groq`*[_type == 'blog'] | order(_createdAt desc) [${lastPageNum}...${lastPageNum + 2}]
  {
   _id,
     title,
@@ -18,7 +19,13 @@ const getpost = async (lastPageNum: number = 0) => {
 }`;
   return client.fetch(query, { lastId: lastPageNum });
 };
-const getTotalPosts = () => {};
+
+// Fix the query to use the correct equality check
+const getTotalPosts = async () => {
+  const query = groq`count(*[_type == "blog"])`; // Corrected to use "==" for type check
+  return client.fetch(query);
+};
+
 export default async function Home({
   searchParams,
 }: {
@@ -28,7 +35,7 @@ export default async function Home({
 }) {
   const pageNum = Number(searchParams?.page ?? 0);
   const posts: PostList[] = await getpost(pageNum);
-  console.log(posts);
+  const postsNum = await getTotalPosts();
   return (
     <main className="flex bg-secondary min-h-screen flex-col items-center justify-between p-24">
       <div className="">
@@ -40,7 +47,7 @@ export default async function Home({
             image={urlForImage(post.titleImage)}
           />
         ))}
-        <PaginationSect />
+        <PaginationSect maxPage={postsNum} />
       </div>
     </main>
   );

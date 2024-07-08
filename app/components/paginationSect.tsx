@@ -12,24 +12,25 @@ import {
 } from "@/components/ui/pagination";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-const PaginationSect = () => {
+const PaginationSect = ({ maxPage }: { maxPage: number }) => {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [pageNum, setPageNum] = useState(0);
 
   const nextPage = () => {
-    setPageNum((prev) => prev + 1);
+    if (pageNum + 4 > maxPage) return;
+    setPageNum((prev) => prev + 2);
     const params = new URLSearchParams(searchParams);
-    params.set("page", (pageNum + 1).toString()); // Increment pageNum
+    params.set("page", (pageNum + 2).toString()); // Increment pageNum
     router.replace(`${pathname}?${params}`);
   };
 
   const previousPage = () => {
     if (pageNum < 1) return;
-    setPageNum((prev) => prev - 1);
+    setPageNum((prev) => prev - 2);
     const params = new URLSearchParams(searchParams);
-    params.set("page", (pageNum - 1).toString()); // Decrement pageNum
+    params.set("page", (pageNum - 2).toString()); // Decrement pageNum
     router.replace(`${pathname}?${params}`);
   };
 
@@ -52,17 +53,7 @@ const PaginationSect = () => {
               {pageNum}
             </PaginationLink>
           </PaginationItem>
-          {/* <PaginationItem>
-            <PaginationLink
-              className="dark:text-primary text-secondary"
-              href="#"
-            >
-              {!pageNum ? pageNum + 2 : pageNum}
-            </PaginationLink>
-          </PaginationItem> */}
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
+
           <PaginationItem>
             <PaginationNext
               className="dark:text-primary text-secondary"
