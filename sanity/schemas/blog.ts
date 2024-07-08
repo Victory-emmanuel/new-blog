@@ -4,11 +4,11 @@ export default {
   name: "blog",
   type: "document",
   title: "Blog",
-  field: [
+  fields: [
     {
       name: "title",
       type: "string",
-      title: "title of blog article",
+      title: "Title of blog article",
     },
     {
       name: "slug",
@@ -31,10 +31,10 @@ export default {
     {
       name: "content",
       type: "array",
-      title: "content",
+      title: "Content",
       of: [
         {
-          type: " ",
+          type: "block",
         },
       ],
     },
