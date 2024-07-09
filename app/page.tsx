@@ -45,6 +45,7 @@ export default async function Home({
             title={post.title}
             description={post.smallDescription}
             image={urlForImage(post.titleImage)}
+            slug={post.currentslug}
           />
         ))}
         <PaginationSect maxPage={postsNum} />
